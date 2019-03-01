@@ -49,8 +49,9 @@ def load_data(dataset_str):
                 objects.append(pkl.load(f, encoding='latin1'))
             else:
                 objects.append(pkl.load(f))
-
+    # pylint: disable=unbalanced-tuple-unpacking
     x, y, tx, ty, allx, ally, graph = tuple(objects)
+    print(objects)
     test_idx_reorder = parse_index_file("data/ind.{}.test.index".format(dataset_str))
     test_idx_range = np.sort(test_idx_reorder)
 
@@ -68,7 +69,7 @@ def load_data(dataset_str):
     features = sp.vstack((allx, tx)).tolil()
     features[test_idx_reorder, :] = features[test_idx_range, :]
     adj = nx.adjacency_matrix(nx.from_dict_of_lists(graph))
-
+    print(features[2][1])
     labels = np.vstack((ally, ty))
     labels[test_idx_reorder, :] = labels[test_idx_range, :]
 
@@ -167,3 +168,10 @@ def chebyshev_polynomials(adj, k):
         t_k.append(chebyshev_recurrence(t_k[-1], t_k[-2], scaled_laplacian))
 
     return sparse_to_tuple(t_k)
+
+
+
+# Load data
+if __name__ == "__main__":
+    adj, features, y_train, y_val, y_test, train_mask, val_mask, test_mask = load_data('cora')
+    pass
